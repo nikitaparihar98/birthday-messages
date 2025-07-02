@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Happy Birthday,MEHAK!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ffe4e1, #fff0f5);
+      margin: 0;
+      text-align: center;
+      color: #4b2e2e;
+    }
+
+    header {
+      background-color: #ffc2d1;
+      padding: 30px;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+    }
+
+    #countdown {
+      font-size: 1.5em;
+      color: #6b3c3c;
+    }
+
+    .form-section, .section {
+      padding: 30px;
+    }
+
+    .message-card {
+      background-color: #fff0f5;
+      border-radius: 12px;
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 600px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    input, textarea {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    button {
+      background-color: #ff80ab;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ff4081;
+    }
+
+    .footer {
+      background-color: #ffc2d1;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎉 Happy Birthday,MEHAK! 🎂</h1>
+    <div id="countdown">Loading countdown...</div>
+  </header>
+
+  <section class="section">
+    <h2>💌 Wishes from Everyone</h2>
+    <div id="messageList"></div>
+  </section>
+
+  <section class="form-section">
+    <h2>✍️ Send Your Wish</h2>
+    <form id="wishForm">
+      <input type="text" id="name" placeholder="Your Name" required />
+      <textarea id="message" rows="4" placeholder="Write your wish..." required></textarea><br />
+      <button type="submit">Send Wish 💖</button>
+    </form>
+  </section>
+
+  <footer class="footer">
+    Created with ❤️ by loved ones. Your wish lives here forever.
+  </footer>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZuAa7UUmdUWWz8Im_NtV6pcRb8XOaZNY",
+      authDomain: "birthday-messages-9ddbd.firebaseapp.com",
+      projectId: "birthday-messages-9ddbd",
+      storageBucket: "birthday-messages-9ddbd.appspot.com",
+      messagingSenderId: "636278994588",
+      appId: "1:636278994588:web:e0d9eafb4cc52148871f59",
+      databaseURL: "https://birthday-messages-9ddbd-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const messagesRef = ref(db, "messages");
+
+    const form = document.getElementById("wishForm");
+    const nameInput = document.getElementById("name");
+    const messageInput = document.getElementById("message");
+    const messageList = document.getElementById("messageList");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      const message = messageInput.value.trim();
+      if (name && message) {
+        push(messagesRef, { name, message });
+        form.reset();
+      }
+    });
+
+    onChildAdded(messagesRef, (data) => {
+      const { name, message } = data.val();
+      const card = document.createElement("div");
+      card.className = "message-card";
+      card.innerHTML = `<p>“${message}”</p><strong>– ${name}</strong>`;
+      messageList.prepend(card);
+    });
+
+    // Countdown logic
+    function updateCountdown() {
+      const now = new Date();
+      const bday = new Date(now.getFullYear(), 6, 12); // July 2
+      if (bday < now) bday.setFullYear(bday.getFullYear() + 1);
+
+      const diff = bday - now;
+      if (diff <= 0) {
+        document.getElementById("countdown").textContent = "🎉 It's her Birthday Today!";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("countdown").textContent =
+        `${days} days, ${hours} hrs, ${minutes} mins, ${seconds} secs left!`;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // Confetti
+    window.onload = () => {
+      confetti({
+        particleCount: 150,
+        spread: 90,
+        origin: { y: 0.6 }
+      });
+    }
+  </script>
+</body>
+</html>

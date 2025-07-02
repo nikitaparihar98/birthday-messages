@@ -68,6 +68,12 @@
       background-color: #ffc2d1;
       padding: 20px;
     }
+
+    img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -75,6 +81,8 @@
     <h1>🎉 Happy Birthday,MEHAK! 🎂</h1>
     <div id="countdown">Loading countdown...</div>
   </header>
+
+  <img src="https://source.unsplash.com/800x400/?birthday,celebration" alt="Birthday Photo" />
 
   <section class="section">
     <h2>💌 Wishes from Everyone</h2>
@@ -105,11 +113,11 @@
     const firebaseConfig = {
       apiKey: "AIzaSyBZuAa7UUmdUWWz8Im_NtV6pcRb8XOaZNY",
       authDomain: "birthday-messages-9ddbd.firebaseapp.com",
+      databaseURL: "https://birthday-messages-9ddbd-default-rtdb.firebaseio.com",
       projectId: "birthday-messages-9ddbd",
-      storageBucket: "birthday-messages-9ddbd.appspot.com",
+      storageBucket: "birthday-messages-9ddbd.firebasestorage.app",
       messagingSenderId: "636278994588",
-      appId: "1:636278994588:web:e0d9eafb4cc52148871f59",
-      databaseURL: "https://birthday-messages-9ddbd-default-rtdb.asia-southeast1.firebasedatabase.app"
+      appId: "1:636278994588:web:e0d9eafb4cc52148871f59"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -139,10 +147,10 @@
       messageList.prepend(card);
     });
 
-    // Countdown logic
+    // Countdown logic for July 12
     function updateCountdown() {
       const now = new Date();
-      const bday = new Date(now.getFullYear(), 6, 12); // July 2
+      const bday = new Date(now.getFullYear(), 6, 12); // July 12
       if (bday < now) bday.setFullYear(bday.getFullYear() + 1);
 
       const diff = bday - now;
@@ -151,10 +159,11 @@
         return;
       }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
+      const totalSeconds = Math.floor(diff / 1000);
+      const days = Math.floor(totalSeconds / (3600 * 24));
+      const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
 
       document.getElementById("countdown").textContent =
         `${days} days, ${hours} hrs, ${minutes} mins, ${seconds} secs left!`;
@@ -163,11 +172,11 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // Confetti
+    // Confetti on load
     window.onload = () => {
       confetti({
-        particleCount: 150,
-        spread: 90,
+        particleCount: 200,
+        spread: 100,
         origin: { y: 0.6 }
       });
     }

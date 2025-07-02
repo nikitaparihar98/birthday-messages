@@ -134,16 +134,20 @@
       const name = nameInput.value.trim();
       const message = messageInput.value.trim();
       if (name && message) {
-        push(messagesRef, { name, message });
+        push(messagesRef, {
+  name: encodeURIComponent(name),
+  message: encodeURIComponent(message)
+});
         form.reset();
       }
     });
 
     onChildAdded(messagesRef, (data) => {
       const { name, message } = data.val();
-      const card = document.createElement("div");
-      card.className = "message-card";
-      card.innerHTML = `<p>“${message}”</p><strong>– ${name}</strong>`;
+const decodedName = decodeURIComponent(name);
+const decodedMessage = decodeURIComponent(message);
+
+      card.innerHTML = `<p>“${decodedMessage}”</p><strong>– ${decodedName}</strong>`;
       messageList.prepend(card);
     });
 
